@@ -1,0 +1,345 @@
+# Install necessary packages
+install.packages("ggplot2")
+install.packages("gganimate")
+install.packages("tidyverse")
+install.packages("scales")
+
+# Load the data and packages
+library(ggplot2)
+library(gganimate)
+library(tidyverse)
+library(scales)
+
+data <- data.frame(
+  year = c(1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010),
+  value = c(98.8, 128, 30.2, 69.3, 65.5, 33.5, 120.4, 7.6, 29.2, 97, 23.1, 20.8, 104.6, 15.2, 31.6, 122.4, 207, 133.6, 166, 43.8, 47.6, 20, 38.9, 113.7, 37, 25.4, 0.01, 51, 58.8, 57.2, 19.5, 370, 9.8, 39.3, 81.3, 33.2, 24, 24.1, 4.5, 19, 52.5, 7, 108.4, 6.3, 7.1, 65.9, 124.2, 54, 142.5, 77.1)
+)
+
+# Normalize the values to range between 0 and 1 for radar plot
+data <- data %>%
+  mutate(value_scaled = rescale(value, to = c(0, 1)))
+
+# Create a column for angle based on the number of years
+data <- data %>%
+  mutate(angle = 2 * pi * (year - min(year)) / (max(year) - min(year) + 1))
+
+# Convert to polar coordinates
+data <- data %>%
+  mutate(x = value_scaled * cos(angle),
+         y = value_scaled * sin(angle))
+
+# Create the radar plot
+radar_plot <- ggplot(data, aes(x, y, group = year)) +
+  geom_polygon(aes(color = factor(year), fill = factor(year)), alpha = 0.2, show.legend = FALSE) +
+  geom_line(aes(color = factor(year)), size = 1, show.legend = FALSE) +
+  coord_equal() +
+  theme_void() +
+  theme(legend.position = "none")
+
+# Animate the radar plot
+animated_radar <- radar_plot +
+  transition_states(year, transition_length = 2, state_length = 1) +
+  ease_aes('linear') +
+  labs(title = 'Year: {closest_state}')
+
+# Render the animation
+animate(animated_radar, nframes = 200, fps = 10)
+
+# Save the animation
+anim_save("animated_radar_plot.gif", animation = last_animation())
+
+
+
+
+
+
+
+
+
+
+
+
+# Load necessary library
+if (!require("plotrix")) {
+  install.packages("plotrix", dependencies = TRUE)
+  library(plotrix)
+}
+
+# Data
+labels <- c("Human", "Cows/ Bufflows", "Sheep / Goat", "Asses", "Camels", "Horses")
+sizes <- c(5.87, 8.98292, 2.0454, 0.3454, 0.1454, 0.3461)
+
+# Calculate percentages
+percentages <- round(100 * sizes / sum(sizes), 1)
+labels_with_percentages <- paste(labels, "\n", percentages, "%", sep=" ")
+
+# Create a pie chart with separated sections and percentages inside
+par(mar=c(5, 5, 5, 5)) # Adjust margins for better spacing
+pie3D(sizes, labels = labels_with_percentages, main = "Pie Chart of Different Species", 
+      explode = 0.1, labelcex = 1.5, start = 0, radius = 1.2, col = rainbow(length(labels)))
+
+# Save the pie chart as a high-resolution image
+png("pie_chart_high_res.png", width = 3000, height = 2000, res = 300)
+par(mar=c(5, 5, 5, 5)) # Adjust margins for better spacing
+pie3D(sizes, labels = labels_with_percentages, main = "Pie Chart of Different Species", 
+      explode = 0.1, labelcex = 1.5, start = 0, radius = 1.2, col = rainbow(length(labels)))
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+# Load necessary library
+if (!require("plotrix")) {
+  install.packages("plotrix", dependencies = TRUE)
+  library(plotrix)
+}
+
+# Data
+labels <- c("Human", "Cows/ Bufflows", "Sheep / Goat", "Asses", "Camels", "Horses")
+sizes <- c(5.87, 8.98292, 2.0454, 0.3454, 0.1454, 0.3461)
+
+# Calculate percentages
+percentages <- round(100 * sizes / sum(sizes), 1)
+labels_with_percentages <- paste(labels, "\n", percentages, "%", sep=" ")
+
+# Create a pie chart with separated sections and percentages inside
+png("pie_chart_high_res.png", width = 3000, height = 2000, res = 300)
+par(mar=c(5, 5, 5, 5)) # Adjust margins for better spacing
+plot(0, type="n", xlab="", ylab="", xlim=c(-1.5, 1.5), ylim=c(-1.5, 1.5), axes=FALSE, asp=1)
+floating.pie(0, 0, sizes, col = rainbow(length(labels)), explode = 0.1)
+pie_labels <- paste(percentages, "%", sep="")
+text(0.7 * cos(seq(0, 2 * pi, length.out = length(sizes) + 1)[-1] - pi / length(sizes)),
+     0.7 * sin(seq(0, 2 * pi, length.out = length(sizes) + 1)[-1] - pi / length(sizes)),
+     labels = pie_labels, cex = 1.5, col = "black")
+title(main = "Pie Chart of Different Species", cex.main = 2)
+
+# Adding a legend
+legend("topright", legend = labels, fill = rainbow(length(labels)), cex = 1.2)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+# Load necessary library
+if (!require("plotrix")) {
+  install.packages("plotrix", dependencies = TRUE)
+  library(plotrix)
+}
+
+# Data
+labels <- c("Human", "Cows/ Bufflows", "Sheep / Goat", "Asses", "Camels", "Horses")
+sizes <- c(5.87, 8.98292, 2.0454, 0.3454, 0.1454, 0.3461)
+
+# Calculate percentages
+percentages <- round(100 * sizes / sum(sizes), 1)
+labels_with_percentages <- paste(percentages, "%", sep="")
+
+# Create a pie chart with separated sections
+png("pie_chart_high_res.png", width = 3000, height = 2000, res = 300)
+par(mar=c(5, 5, 5, 5)) # Adjust margins for better spacing
+plot(0, type="n", xlab="", ylab="", xlim=c(-1.5, 1.5), ylim=c(-1.5, 1.5), axes=FALSE, asp=1)
+floating.pie(0, 0, sizes, col = rainbow(length(labels)), explode = 0.1)
+
+# Add legend
+legend("topright", legend = labels, fill = rainbow(length(labels)), cex = 1.2)
+
+# Add a title
+title(main = "Pie Chart of Different Species", cex.main = 2)
+
+dev.off()
+
+
+
+
+
+
+# Load necessary libraries
+if (!require("ggplot2")) {
+  install.packages("ggplot2", dependencies = TRUE)
+  library(ggplot2)
+}
+
+# Correct Data Preparation
+months <- rep(c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"), 3)
+observed_values <- c(
+  45680.2148, 63117.6484, 79471.9883, 88188.9102, 65923.3438, 46417.1016, 39578.2036, 
+  46392.4268, 59358.6406, 48559.1211, 35431.1836, 49666.0037,
+  63624.3047, 58762.3672, 72412.3672, 60605.29, 53480.7334, 41837.5811, 49062.5334,
+  58359.6777, 53585, 37489.7734, 56117.6484, 63666.0037,
+  61471.9883, 74188.9102, 89923.3438, 100984, 63624.3047, 58762.3672, 72412.3672,
+  60605.29, 53480.7334, 41837.5811, 49062.5334, 58359.6777
+)
+
+simulated_values <- c(
+  38260, 59000, 63590, 72860, 53090, 50430, 49950, 51070, 54450, 45460, 43560, 45390,
+  56600, 53786, 67960, 58170, 55720, 44350, 49000, 56180, 50710, 43280, 48700, 62250,
+  55450, 68960, 95860, 109624, 56600, 53786, 67960, 58170, 55720, 44350, 49000, 56180, 
+  50710
+)
+
+# Ensure lengths match
+length(months)
+length(observed_values)
+length(simulated_values)
+
+# Create data frame
+data <- data.frame(
+  Month = factor(months[1:length(simulated_values)], levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar")),
+  Observed = observed_values[1:length(simulated_values)],
+  Simulated = simulated_values
+)
+
+# Plot
+ggplot(data, aes(x = Month)) +
+  geom_bar(aes(y = Observed, fill = "Observed"), stat = "identity", position = "dodge") +
+  geom_line(aes(y = Simulated, color = "Simulated"), size = 1, group = 1) +
+  geom_point(aes(y = Simulated, color = "Simulated"), size = 2) +
+  scale_y_continuous(name = "E. coli Concentrations") +
+  labs(title = "Observed vs Simulated E. coli Concentrations",
+       x = "Month",
+       color = "Legend",
+       fill = "Legend") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("Observed" = "skyblue")) +
+  scale_color_manual(values = c("Simulated" = "red"))
+
+
+
+
+
+
+
+
+
+
+# Load necessary libraries
+if (!require("ggplot2")) {
+  install.packages("ggplot2", dependencies = TRUE)
+  library(ggplot2)
+}
+
+# Data Preparation
+months <- rep(c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"), 3)
+observed_values <- c(
+  45680.2148, 63117.6484, 79471.9883, 88188.9102, 65923.3438, 46417.1016, 39578.2036, 
+  46392.4268, 59358.6406, 48559.1211, 35431.1836, 49666.0037,
+  63624.3047, 58762.3672, 72412.3672, 60605.29, 53480.7334, 41837.5811, 49062.5334,
+  58359.6777, 53585, 37489.7734, 56117.6484, 63666.0037,
+  61471.9883, 74188.9102, 89923.3438, 100984, 63624.3047, 58762.3672, 72412.3672,
+  60605.29, 53480.7334, 41837.5811, 49062.5334, 58359.6777
+)
+simulated_values <- c(
+  38260, 59000, 63590, 72860, 53090, 50430, 49950, 51070, 54450, 45460, 43560, 45390,
+  56600, 53786, 67960, 58170, 55720, 44350, 49000, 56180, 50710, 43280, 48700, 62250,
+  55450, 68960, 95860, 109624, 56600, 53786, 67960, 58170, 55720, 44350, 49000, 56180, 
+  50710
+)
+
+# Ensure lengths match
+length(months)
+length(observed_values)
+length(simulated_values)
+
+# Create data frame
+data <- data.frame(
+  Month = factor(months[1:length(simulated_values)], levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar")),
+  Observed = observed_values[1:length(simulated_values)],
+  Simulated = simulated_values
+)
+
+# Plot
+ggplot(data, aes(x = Month)) +
+  geom_bar(aes(y = Observed, fill = "Observed"), stat = "identity", position = "dodge", alpha = 0.7) +
+  geom_bar(aes(y = Simulated, fill = "Simulated"), stat = "identity", position = "dodge", alpha = 0.5) +
+  scale_y_continuous(name = "E. coli Concentrations") +
+  labs(title = "Observed vs Simulated E. coli Concentrations",
+       x = "Month",
+       fill = "Legend") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("Observed" = "skyblue", "Simulated" = "red"))
+
+
+
+
+
+
+
+
+
+
+# Load necessary libraries
+if (!require("ggplot2")) {
+  install.packages("ggplot2", dependencies = TRUE)
+  library(ggplot2)
+}
+
+if (!require("reshape2")) {
+  install.packages("reshape2", dependencies = TRUE)
+  library(reshape2)
+}
+
+# Data Preparation
+months <- rep(c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"), 3)
+observed_values <- c(
+  45680.2148, 63117.6484, 79471.9883, 88188.9102, 65923.3438, 46417.1016, 39578.2036, 
+  46392.4268, 59358.6406, 48559.1211, 35431.1836, 49666.0037,
+  63624.3047, 58762.3672, 72412.3672, 60605.29, 53480.7334, 41837.5811, 49062.5334,
+  58359.6777, 53585, 37489.7734, 56117.6484, 63666.0037,
+  61471.9883, 74188.9102, 89923.3438, 100984, 63624.3047, 58762.3672, 72412.3672,
+  60605.29, 53480.7334, 41837.5811, 49062.5334, 58359.6777
+)
+simulated_values <- c(
+  38260, 59000, 63590, 72860, 53090, 50430, 49950, 51070, 54450, 45460, 43560, 45390,
+  56600, 53786, 67960, 58170, 55720, 44350, 49000, 56180, 50710, 43280, 48700, 62250,
+  55450, 68960, 95860, 109624, 56600, 53786, 67960, 58170, 55720, 44350, 49000, 56180, 
+  50710
+)
+
+# Ensure lengths match
+length(months)
+length(observed_values)
+length(simulated_values)
+
+# Create data frame
+data <- data.frame(
+  Month = factor(months[1:length(simulated_values)], levels = c("Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar")),
+  Observed = observed_values[1:length(simulated_values)],
+  Simulated = simulated_values
+)
+
+# Exclude the last entry
+data <- data[1:(nrow(data) - 1), ]
+
+# Convert data to long format using reshape2
+data_long <- melt(data, id.vars = "Month", variable.name = "Type", value.name = "Value")
+
+# Plot
+ggplot(data_long, aes(x = Month, y = Value, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge", color = "orange") +
+  scale_y_continuous(name = "E. coli Concentrations (cfu/100ml)") +
+  labs(title = "Calibration Graph",
+       x = "Month",
+       fill = " ") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("Observed" = "darkgreen", "Simulated" = "red")) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, size = 12),
+        legend.position = "top")
